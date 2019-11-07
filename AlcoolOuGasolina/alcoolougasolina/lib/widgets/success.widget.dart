@@ -26,7 +26,7 @@ class Success extends StatelessWidget {
             height: 30,
           ),
           Text(
-            "Compensa utilizar Alcool",
+            result,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 40,
@@ -36,7 +36,7 @@ class Success extends StatelessWidget {
           ),
           LoadingButton(
             busy: false,
-            func: () {},
+            func: reset,
             invert: true,
             text: "CALCULAR NOVAMENTE",
           ),
