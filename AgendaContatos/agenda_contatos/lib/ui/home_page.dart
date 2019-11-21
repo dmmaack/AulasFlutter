@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:agenda_contatos/helpers/contact_helper.dart';
+import 'package:agenda_contatos/helpers/func_helper.dart';
 import 'package:agenda_contatos/ui/contact_page.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +10,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ContactHelper _helper = ContactHelper();
+  FuncHelper _funcHelper = FuncHelper();
 
   List<Contact> listContacts = List();
 
@@ -19,24 +19,21 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     // Contact c = Contact();
-    // c.name = "Daniel Maack";
-    // c.email = "dmmak@fgkes.com";
-    // c.phone = "1209929283874";
+    // // c.name = "Daniel Maack";
+    // // c.email = "dmmak@fgkes.com";
+    // // c.phone = "1209929283874";
+
+    // _helper.deleteContact(2);
+
+    // c = Contact();
+    // c.name = "Malevola Malevolente";
+    // c.email = "male@fgkes.com";
+    // c.phone = "4511254789";
+    // c.image = "imageteste";
 
     // _helper.saveContact(c);
 
-    // c = Contact();
-    // c.name = "Daniel Maack";
-    // c.email = "dmmak@fgkes.com";
-    // c.phone = "1209929283874";
-
-    //_helper.saveContact(c);
-
-    _helper.getAllContacts().then((list) {
-      setState(() {
-        listContacts = list;
-      });
-    });
+    _getAllContacts();
   }
 
   @override
@@ -82,9 +79,9 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: listContacts[index].image != null
-                          ? FileImage(File(listContacts[index].image))
-                          : AssetImage("images/person.png")),
+                    image:
+                        _funcHelper.getImageProvider(listContacts[index].image),
+                  ),
                 ),
               ),
               Column(
@@ -112,8 +109,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   //quando o parametro é passado entre chaves {} significa que o parametro é opcional
-  void _showContactPage({Contact contact}) {
-    Navigator.push(
+  void _showContactPage({Contact contact}) async {
+    final _recContact = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContactPage(
@@ -121,5 +118,21 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+    if (_recContact != null) {
+      if (contact != null) {
+        await _helper.updateContact(_recContact);
+      } else {
+        await _helper.saveContact(_recContact);
+      }
+      _getAllContacts();
+    }
+  }
+
+  void _getAllContacts() {
+    _helper.getAllContacts().then((list) {
+      setState(() {
+        listContacts = list;
+      });
+    });
   }
 }
